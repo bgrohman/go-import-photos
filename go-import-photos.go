@@ -87,6 +87,13 @@ func importFile(sourceFilePath string, destinationPath string, collisions map[st
     return nil
 }
 
+func checkFatalError(err error) {
+    if err != nil {
+        log.Fatal(err)
+        os.Exit(1)
+    }
+}
+
 func main() {
     args := os.Args[1:]
     if len(args) != 2 {
@@ -95,22 +102,13 @@ func main() {
     }
 
     sourcePath, err := filepath.Abs(args[0])
-    if err != nil {
-        log.Fatal(err)
-        return
-    }
+    checkFatalError(err)
 
     destinationPath, err := filepath.Abs(args[1])
-    if err != nil {
-        log.Fatal(err)
-        return
-    }
+    checkFatalError(err)
 
     files, err := ioutil.ReadDir(sourcePath)
-    if err != nil {
-        log.Fatal(err)
-        return
-    }
+    checkFatalError(err)
 
     collisions := make(map[string]int)
     unimportedFiles := make([]string, 0, len(files))
