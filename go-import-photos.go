@@ -13,6 +13,9 @@ import (
 )
 
 func help() {
+    fmt.Println("Imports photos organized according to the EXIF DateTime in")
+    fmt.Println("<destination-path>/<year>/<year>-<month>-<day>/ subdirectories.")
+    fmt.Println("")
     fmt.Println("Usage:")
     fmt.Println("go-import-photos <source-path> <destination-path>");
 }
