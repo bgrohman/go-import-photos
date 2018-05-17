@@ -7,6 +7,7 @@ import (
     "log"
     "path/filepath"
     "os"
+    "strings"
     "strconv"
     "github.com/rwcarlsen/goexif/exif"
 )
@@ -35,6 +36,24 @@ func copyFile(source, destination string) error {
     }
 
     return out.Close()
+}
+
+func getPathWithoutCollision(path string, originalPath string, collisions map[string]int) string {
+    if _, err := os.Stat(path); err == nil {
+        if originalPath == "" {
+            originalPath = path
+        }
+        next := collisions[originalPath] + 1
+        collisions[originalPath] = next
+        ext := filepath.Ext(originalPath)
+        withoutExt := strings.TrimSuffix(originalPath, ext)
+        newPath := withoutExt + "_" + strconv.Itoa(next) + ext
+        safePath := getPathWithoutCollision(newPath, originalPath, collisions)
+        fmt.Println("Found duplicate for " + filepath.Base(originalPath) + ", renaming to " + filepath.Base(safePath))
+        return safePath
+    }
+
+    return path
 }
 
 func importFile(sourceFilePath string, destinationPath string, collisions map[string]int) error {
@@ -71,12 +90,7 @@ func importFile(sourceFilePath string, destinationPath string, collisions map[st
         return err
     }
 
-    if _, err := os.Stat(destinationFilePath); err == nil {
-        next := collisions[destinationFilePath] + 1
-        collisions[destinationFilePath] = next
-        destinationFilePath = destinationFilePath + "_" + strconv.Itoa(next)
-        fmt.Println("Found duplicate for " + sourceBase + ", renaming to " + filepath.Base(destinationFilePath))
-    }
+    destinationFilePath = getPathWithoutCollision(destinationFilePath, "", collisions)
 
     err = copyFile(sourceFilePath, destinationFilePath)
     if err != nil {
