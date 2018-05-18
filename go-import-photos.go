@@ -52,7 +52,9 @@ func getPathWithoutCollision(path string, originalPath string, collisions map[st
         withoutExt := strings.TrimSuffix(originalPath, ext)
         newPath := withoutExt + "_" + strconv.Itoa(next) + ext
         safePath := getPathWithoutCollision(newPath, originalPath, collisions)
-        fmt.Println("Found duplicate for " + filepath.Base(originalPath) + ", renaming to " + filepath.Base(safePath))
+        if newPath != safePath {
+            fmt.Println("Found duplicate for " + filepath.Base(originalPath) + ", renaming to " + filepath.Base(safePath))
+        }
         return safePath
     }
 
@@ -139,6 +141,7 @@ func main() {
     }
 
     if len(unimportedFiles) > 0 {
+        fmt.Println("")
         fmt.Println("The following files were not imported:")
 
         for _, f := range unimportedFiles {
