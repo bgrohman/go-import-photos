@@ -106,6 +106,38 @@ func importFile(sourceFilePath string, destinationPath string, collisions map[st
     return nil
 }
 
+func Import(sourcePath string, destinationPath string) (map[string]string, error) {
+    files, err := ioutil.ReadDir(sourcePath)
+    if err != nil {
+        log.Fatal(err)
+        return nil, err
+    }
+
+    operations := make(map[string]string)
+    collisions := make(map[string]int)
+    unimportedFiles := make([]string, 0, len(files))
+
+    for _, f := range files {
+        sourceFilePath := filepath.Join(sourcePath, f.Name())
+        operations[sourceFilePath] = destinationPath
+        err = importFile(sourceFilePath, destinationPath, collisions)
+        if err != nil {
+            unimportedFiles = append(unimportedFiles, sourceFilePath)
+        }
+    }
+
+    if len(unimportedFiles) > 0 {
+        fmt.Println("")
+        fmt.Println("The following files were not imported:")
+
+        for _, f := range unimportedFiles {
+            fmt.Println(f)
+        }
+    }
+
+    return operations, nil
+}
+
 func checkFatalError(err error) {
     if err != nil {
         log.Fatal(err)
@@ -126,26 +158,6 @@ func main() {
     destinationPath, err := filepath.Abs(args[1])
     checkFatalError(err)
 
-    files, err := ioutil.ReadDir(sourcePath)
+    _, err = Import(sourcePath, destinationPath)
     checkFatalError(err)
-
-    collisions := make(map[string]int)
-    unimportedFiles := make([]string, 0, len(files))
-
-    for _, f := range files {
-        sourceFilePath := filepath.Join(sourcePath, f.Name())
-        err = importFile(sourceFilePath, destinationPath, collisions)
-        if err != nil {
-            unimportedFiles = append(unimportedFiles, sourceFilePath)
-        }
-    }
-
-    if len(unimportedFiles) > 0 {
-        fmt.Println("")
-        fmt.Println("The following files were not imported:")
-
-        for _, f := range unimportedFiles {
-            fmt.Println(f)
-        }
-    }
 }
