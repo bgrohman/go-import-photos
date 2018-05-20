@@ -135,6 +135,8 @@ func Import(sourcePath string, destinationPath string) (map[string]string, error
         }
     }
 
+    fmt.Println("Imported", len(operations), "files")
+
     return operations, nil
 }
 
