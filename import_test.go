@@ -38,7 +38,7 @@ func TestImport(t *testing.T) {
     }
 
     if reflect.DeepEqual(expectedOperations, operations) != true {
-        t.Error("Wrong operations list, %s", operations)
+        t.Errorf("Wrong operations list, %s", operations)
     }
 
     expectedFiles := []string {filepath.Join(DESTINATION, "2011", "2011-10-03", "test1.jpg"),
@@ -49,7 +49,7 @@ func TestImport(t *testing.T) {
     for _, f := range expectedFiles {
         _, err := os.Stat(f)
         if err != nil {
-            t.Error("Missing destination file %s", f)
+            t.Errorf("Missing destination file %s", f)
         }
     }
 }

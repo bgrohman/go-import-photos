@@ -3,16 +3,18 @@
 
 [[projects]]
   branch = "go1"
+  digest = "1:22fc7c44a83772265491838358e401c3919d20b38d6126ba1b2f9910df387322"
   name = "github.com/rwcarlsen/goexif"
   packages = [
     "exif",
-    "tiff"
+    "tiff",
   ]
+  pruneopts = "UT"
   revision = "fb35d3c3290d09f3524b684b5d42d0063c227158"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "89fa32020e5ee3fb1291abbaf35c7c6c2238cb1d3b46bb0edb6f2285237c9549"
+  input-imports = ["github.com/rwcarlsen/goexif/exif"]
   solver-name = "gps-cdcl"
   solver-version = 1
