@@ -64,19 +64,19 @@ func getPathWithoutCollision(path string, originalPath string, collisions map[st
 func importFile(sourceFilePath string, destinationPath string, collisions map[string]int) error {
     file, err := os.Open(sourceFilePath)
     if err != nil {
-        log.Fatal(err)
+        log.Println(err)
         return err
     }
 
     exifData, err := exif.Decode(file)
     if err != nil {
-        log.Fatal(err)
+        log.Print(err)
         return err
     }
 
     dateTime, err := exifData.DateTime()
     if err != nil {
-        log.Fatal(err)
+        log.Print(err)
         return err
     }
 
@@ -89,9 +89,9 @@ func importFile(sourceFilePath string, destinationPath string, collisions map[st
     destinationFilePath := filepath.Join(destinationDirectory, sourceBase)
 
     fmt.Println("Copying " + sourceBase + " to " + destinationFilePath)
-    err = os.MkdirAll(destinationDirectory, 0777)
+    err = os.MkdirAll(destinationDirectory, 0750)
     if err != nil {
-        log.Fatal(err)
+        log.Println(err)
         return err
     }
 
@@ -99,7 +99,7 @@ func importFile(sourceFilePath string, destinationPath string, collisions map[st
 
     err = copyFile(sourceFilePath, destinationFilePath)
     if err != nil {
-        log.Fatal(err)
+        log.Println(err)
         return err
     }
 
@@ -133,6 +133,8 @@ func Import(sourcePath string, destinationPath string) (map[string]string, error
         for _, f := range unimportedFiles {
             fmt.Println(f)
         }
+
+        fmt.Println("")
     }
 
     fmt.Println("Imported", len(operations), "files")
